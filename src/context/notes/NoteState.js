@@ -78,7 +78,8 @@ const NoteState = (props) => {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          "auth-token": "your-auth-token-here",
+          "auth-token":
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjUzNjFmNzdhM2YxOTNjM2RhYjJhMzZiIn0sImlhdCI6MTY5ODE1NDIxNn0.uTWvdkCS_5K9DLHOLXm8XJwGDJd7vvOF-XO_UK1t038",
         },
         body: JSON.stringify({ title, description, tag }),
       });
@@ -87,13 +88,19 @@ const NoteState = (props) => {
         throw new Error("Failed to update note");
       }
 
-      const updatedNote = await response.json();
+      let newNotes = JSON.parse(JSON.stringify(notes));
+      //Logic to edit in client
+      for (let index = 0; index < newNotes.length; index++) {
+        const element = newNotes[index];
+        if (element._id === id) {
+          newNotes[index].title = title;
+          newNotes[index].description = description;
+          newNotes[index].tag = tag;
 
-      const updatedNotes = notes.map((note) =>
-        note._id === id ? { ...note, ...updatedNote } : note
-      );
-
-      setNotes(updatedNotes);
+          break;
+        }
+      }
+      setNotes(newNotes);
     } catch (error) {
       console.error("Error updating note:", error);
     }
