@@ -9,13 +9,16 @@ const Notes = () => {
   let navigate = useNavigate();
   const { notes, getNotes, editNote } = context;
   useEffect(() => {
-    if (localStorage.getItem("token")) {
-      getNotes();
-      // eslint-disable-next-line
-    } else {
-      navigate("/login");
-    }
-  }, []);
+    const fetchData = async () => {
+      if (localStorage.getItem("token")) {
+        await getNotes();
+      } else {
+        navigate("/login");
+      }
+    };
+
+    fetchData();
+  }, [getNotes, navigate]);
   const ref = useRef(null);
   const refClose = useRef(null);
 
